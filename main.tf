@@ -6,7 +6,7 @@ provider "tfe" {
 }
 
 resource "tfe_organization" "test-organization" {
-  name  = "${var.org_name}-2"
+  name  = "${var.org_name}"
   email = var.admin_email
 }
 
@@ -16,7 +16,7 @@ resource "tfe_workspace" "test" {
   queue_all_runs = true
   vcs_repo {
     branch         = "main"
-    identifier     = "TonyPeponi/terraform_null_resources"
+    identifier     = var.github_repo
     oauth_token_id = tfe_oauth_client.github.oauth_token_id
   }
 

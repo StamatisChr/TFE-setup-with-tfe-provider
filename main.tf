@@ -4,7 +4,7 @@ terraform {
   required_providers {
     tfe = {
       source  = "hashicorp/tfe"
-      version = "~> 0.73.0"
+      version = "~> 0.74.0"
     }
   }
 }
@@ -44,7 +44,7 @@ resource "tfe_variable" "test" {
 
 resource "tfe_variable" "test2" {
   key             = "my_var_name"
-  value           = "my_var_value"
+  value_wo        = "my_var_value"
   category        = "terraform"
   description     = "A useful description for the test variable"
   variable_set_id = tfe_variable_set.test.id

@@ -36,6 +36,7 @@ resource "tfe_workspace" "test" {
 
 resource "tfe_workspace" "test-var" {
   name              = "tfe_var_test"
+  organization      = tfe_organization.test-organization.name
   terraform_version = "1.11.4"
 }
 

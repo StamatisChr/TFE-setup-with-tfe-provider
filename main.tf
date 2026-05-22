@@ -48,27 +48,27 @@ resource "tfe_variable" "test-var" {
 }
 
 
-resource "tfe_variable" "test" {
-  key          = "mycount"
-  value        = "1"
-  category     = "terraform"
-  description  = "A useful description for the test variable"
-  workspace_id = tfe_workspace.test.id
-}
+# resource "tfe_variable" "test" {
+#   key          = "mycount"
+#   value        = "1"
+#   category     = "terraform"
+#   description  = "A useful description for the test variable"
+#   workspace_id = tfe_workspace.test.id
+# }
 
-resource "tfe_variable" "test2" {
-  key             = "my_var_name"
-  value_wo        = "my_var_value"
-  category        = "terraform"
-  description     = "A useful description for the test variable"
-  variable_set_id = tfe_variable_set.test.id
-}
+# resource "tfe_variable" "test2" {
+#   key             = "my_var_name"
+#   value_wo        = "my_var_value"
+#   category        = "terraform"
+#   description     = "A useful description for the test variable"
+#   variable_set_id = tfe_variable_set.test.id
+# }
 
-resource "tfe_variable_set" "test" {
-  name         = "Test Variable set"
-  description  = "Description for test variable set"
-  organization = tfe_organization.test-organization.name
-}
+# resource "tfe_variable_set" "test" {
+#   name         = "Test Variable set"
+#   description  = "Description for test variable set"
+#   organization = tfe_organization.test-organization.name
+# }
 
 
 resource "tfe_oauth_client" "github" {

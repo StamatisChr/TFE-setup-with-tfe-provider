@@ -4,7 +4,7 @@ terraform {
   required_providers {
     tfe = {
       source  = "hashicorp/tfe"
-      version = "~> 0.73.0"
+      version = "0.74.0"
     }
   }
 }
@@ -33,6 +33,19 @@ resource "tfe_workspace" "test" {
     admin-api-token = var.admin_api_token
   }
 }
+
+resource "tfe_workspace" "test-var" {
+  name              = "tfe_var_test"
+  terraform_version = "1.11.4"
+}
+
+resource "tfe_variable" "test-var" {
+  workspace_id = tfe_workspace.test-var.id
+  category     = "terraform"
+  key          = "test"
+  value        = timestamp()
+}
+
 
 resource "tfe_variable" "test" {
   key          = "mycount"

@@ -4,7 +4,7 @@ terraform {
   required_providers {
     tfe = {
       source  = "hashicorp/tfe"
-      version = "0.74.1"
+      version = "0.77.0"
     }
   }
 }
@@ -14,19 +14,24 @@ provider "tfe" {
   token    = var.admin_token
 }
 
-resource "tfe_organization" "test-organization" {
-  name  = var.org_name
-  email = var.admin_email
+resource "tfe_organization" "this" {
+  for_each = local.organizations
+
+  name  = each.key
+  email = each.value.email
 }
 
-resource "tfe_workspace" "test" {
-  name           = var.workspace_name
-  organization   = tfe_organization.test-organization.name
-  queue_all_runs = true
+resource "tfe_workspace" "this" {
+  for_each = local.workspaces
+
+  name           = each.value.name
+  organization   = tfe_organization.this[each.value.org].name
+  queue_all_runs = each.value.queue_all_runs
+
   vcs_repo {
-    branch         = "main"
-    identifier     = var.github_repo
-    oauth_token_id = tfe_oauth_client.github.oauth_token_id
+    identifier     = each.value.identifier
+    branch         = each.value.branch
+    oauth_token_id = tfe_oauth_client.github[each.value.org].oauth_token_id
   }
 
   tags = {
@@ -39,7 +44,7 @@ resource "tfe_variable" "test" {
   value        = "1"
   category     = "terraform"
   description  = "A useful description for the test variable"
-  workspace_id = tfe_workspace.test.id
+  workspace_id = tfe_workspace.this["org-alpha:networking"].id
 }
 
 resource "tfe_variable" "test2" {
@@ -53,12 +58,13 @@ resource "tfe_variable" "test2" {
 resource "tfe_variable_set" "test" {
   name         = "Test Variable set"
   description  = "Description for test variable set"
-  organization = tfe_organization.test-organization.name
+  organization = tfe_organization.this["org-alpha"].name
 }
 
 
 resource "tfe_oauth_client" "github" {
-  organization = tfe_organization.test-organization.name
+  for_each     = local.organizations
+  organization = tfe_organization.this[each.key].name
 
   api_url          = "https://api.github.com"
   http_url         = "https://github.com"
@@ -67,7 +73,8 @@ resource "tfe_oauth_client" "github" {
 }
 
 resource "tfe_workspace_run" "ws_run_test" {
-  workspace_id = tfe_workspace.test.id
+  for_each     = tfe_workspace.this
+  workspace_id = tfe_workspace.this[each.key].id
 
   apply {
     manual_confirm    = false

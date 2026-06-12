@@ -65,21 +65,3 @@ resource "tfe_variable" "test2" {
   description      = "A useful description for the test variable"
   variable_set_id  = tfe_variable_set.test.id
 }
-
-resource "tfe_workspace_run" "ws_run_test" {
-  for_each     = tfe_workspace.this
-  workspace_id = each.value.id
-
-  apply {
-    manual_confirm    = false
-    wait_for_run      = true
-    retry_attempts    = 5
-    retry_backoff_min = 5
-  }
-  destroy {
-    manual_confirm    = false
-    wait_for_run      = true
-    retry_attempts    = 3
-    retry_backoff_min = 10
-  }
-}
